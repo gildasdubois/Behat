@@ -30,6 +30,7 @@ class LoggerDataCollector implements EventSubscriberInterface
     private $finishTime;
     private $statuses             = array(
         StepEvent::PASSED      => 'passed',
+        StepEvent::NOTICE      => 'notice',
         StepEvent::SKIPPED     => 'skipped',
         StepEvent::PENDING     => 'pending',
         StepEvent::UNDEFINED   => 'undefined',
@@ -43,6 +44,7 @@ class LoggerDataCollector implements EventSubscriberInterface
     private $stepsCount           = 0;
     private $stepsStatuses        = array();
     private $definitionsSnippets  = array();
+    private $noticeStepsEvents    = array();
     private $failedStepsEvents    = array();
     private $pendingStepsEvents   = array();
 
@@ -256,6 +258,16 @@ class LoggerDataCollector implements EventSubscriberInterface
     }
 
     /**
+     * Returns array of notice steps events.
+     *
+     * @return array
+     */
+    public function getNoticeStepsEvents()
+    {
+        return $this->noticeStepsEvents;
+    }
+
+    /**
      * Returns array of failed steps events.
      *
      * @return array
@@ -333,6 +345,9 @@ class LoggerDataCollector implements EventSubscriberInterface
                 } else {
                     $this->definitionsSnippets[$hash]->addStep($event->getSnippet()->getLastStep());
                 }
+                break;
+            case StepEvent::NOTICE:
+                $this->noticeStepsEvents[] = $event;
                 break;
             case StepEvent::FAILED:
                 $this->failedStepsEvents[] = $event;

@@ -15,6 +15,7 @@ use Behat\Behat\Context\ContextInterface,
     Behat\Behat\Definition\DefinitionInterface,
     Behat\Behat\Exception\AmbiguousException,
     Behat\Behat\Exception\UndefinedException,
+    Behat\Behat\Exception\NoticeException,
     Behat\Behat\Exception\PendingException,
     Behat\Behat\Event\StepEvent;
 
@@ -125,6 +126,9 @@ class StepTester implements NodeVisitorInterface
             try {
                 $this->executeStepDefinition($step, $definition);
                 $result = StepEvent::PASSED;
+            } catch (NoticeException $e) {
+            	$result    = StepEvent::NOTICE;
+            	$exception = $e;
             } catch (PendingException $e) {
                 $result    = StepEvent::PENDING;
                 $exception = $e;
@@ -178,7 +182,7 @@ class StepTester implements NodeVisitorInterface
                 $substepNode->setParent($step->getParent());
                 $substepEvent = $this->executeStep($substepNode);
 
-                if (StepEvent::PASSED !== $substepEvent->getResult()) {
+                if (StepEvent::NOTICE < $substepEvent->getResult()) {
                     throw $substepEvent->getException();
                 }
             } elseif (is_callable($chainItem)) {

@@ -27,10 +27,11 @@ use Behat\Gherkin\Node\StepNode,
 class StepEvent extends Event implements EventInterface
 {
     const PASSED    = 0;
-    const SKIPPED   = 1;
-    const PENDING   = 2;
-    const UNDEFINED = 3;
-    const FAILED    = 4;
+    const NOTICE    = 1;
+    const SKIPPED   = 2;
+    const PENDING   = 3;
+    const UNDEFINED = 4;
+    const FAILED    = 5;
 
     private $step;
     private $parent;
